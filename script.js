@@ -1,26 +1,35 @@
 async function fetchData(recipe) {
-  let url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${recipe}`;
-  let response = await fetch(url);
-  let data = await response.json();
-  let meal = data.meals[0]
-  console.log(meal);
-  let totalIngredients = [];
+  try{
+      
+    let url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${recipe}`;
+    let response = await fetch(url);
+    let data = await response.json();
+    let meal = data.meals[0]
+    console.log(meal);
+    let totalIngredients = [];
 
-  for (let i = 1; i <= 20; i++) {
-    const ingredient = meal['strIngredient' + i];
-    const measure = meal['strMeasure' + i];
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = meal['strIngredient' + i];
+      const measure = meal['strMeasure' + i];
 
-    // Only add if ingredient is valid (not null or empty string)
-    if (ingredient && ingredient.trim() !== '') {
-      totalIngredients.push({
-        ing: ingredient.trim(),
-        meas: measure ? measure.trim() : ''
-      });
+      // Only add if ingredient is valid (not null or empty string)
+      if (ingredient && ingredient.trim() !== '') {
+        totalIngredients.push({
+          ing: ingredient.trim(),
+          meas: measure ? measure.trim() : ''
+        });
+      }
     }
+    document.querySelector('.down').style.display = 'flex';
+    document.querySelector('.up').style.display = 'flex';
+    document.querySelector('.not-found').style.display = 'none';
+    console.log(totalIngredients);
+    updateHTML(meal,totalIngredients);
+  }catch(error){
+    document.querySelector('.up').style.display = 'none';
+    document.querySelector('.down').style.display = 'none';
+    document.querySelector('.not-found').style.display = 'block';
   }
-
-  console.log(totalIngredients);
-  updateHTML(meal,totalIngredients);
 }
 
 function updateHTML(meal,total){
@@ -46,6 +55,11 @@ searchBtn.addEventListener('click',()=>{
   let inputValue = inputElement.value;
   if(inputValue.length!=0){
     fetchData(inputValue);
+  }
+});
+document.querySelector('body').addEventListener('keydown',(e)=>{
+  if(e.key === 'Enter'){
+    searchBtn.click();
   }
 })
 fetchData('biryani');

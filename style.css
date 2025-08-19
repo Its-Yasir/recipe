@@ -126,3 +126,7 @@ nav .search-bar{
     text-align: center;
   }
 }
+.not-found{
+  text-align: center;
+  display: none;
+}
